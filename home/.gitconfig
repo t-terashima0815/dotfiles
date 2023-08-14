@@ -1,0 +1,7 @@
+[init]
+	defaultBranch = main
+[user]
+	email = taira.terashima@gmail.com
+	name = Taira Terashima
+[core]
+	editor = vim

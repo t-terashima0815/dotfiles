@@ -1,0 +1,26 @@
+[character]
+error_symbol = "[>](bold red)"
+success_symbol = "[<](bold green)"
+
+[directory]
+truncation_length = 100
+truncate_to_repo = false
+
+[custom.arch]
+command = "unaem -m"
+when = """ test $(uname -m) = "x86_64" """
+style = "bold yellow"
+format = "[$output]($style)"
+
+[docker_context]
+format = "via [🐳 $context](blue bold)"
+
+[git_branch]
+symbol = " "
+
+[username]
+style_user = "white bold"
+style_root = "black bold"
+format = "[$user]($style) "
+disabled = false
+show_always = true

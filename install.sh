@@ -39,6 +39,11 @@ preinstall_apt_packages() {
   neovim \
   curl \
   wget \
+  docker.io \
+  docker-doc \
+  docker-compose \
+  containerd \
+  runc \
   apt-transport-https \
   build-essential \
   pkg-config \

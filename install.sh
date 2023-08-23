@@ -39,6 +39,7 @@ preinstall_apt_packages() {
   neovim \
   curl \
   wget \
+  trash-cli \
   docker.io \
   docker-doc \
   docker-compose \
@@ -126,7 +127,10 @@ setup_symlinks() {
   for f in $(find home/.config -mindepth 1 -maxdepth 1); do
     ln  -snfv ${PWD}/"$f" ~/.config/
   done
-  for f in $(find home/ -mindepth 1 -maxdepth 1 -path "home/.config" -prune -o -print); do
+  for f in $(find home/.local -mindepth 1 -maxdepth 1); do
+    ln -snfv ${PWD}/"$f" ~/.local/
+  done
+  for f in $(find home/ -mindepth 1 -maxdepth 1 -path "home/.config" -prune -o -path "home/.local" -prune -o -print); do
     ln  -snfv ${PWD}/"$f" ~/
   done
 }

@@ -12,3 +12,4 @@ if [[ $(command -v exa) ]]; then
   alias lta=eta
 fi
 
+alias rm=trash-put

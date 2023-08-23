@@ -10,6 +10,11 @@ apply = ['source']
 [plugins.dotfiles-defer]
 local = '~/.config/zsh/defer'
 
+[plugins.env-path]
+inline = 'export PATH="~/.local/bin:$PATH"'
+
+[plugins.env-editor]
+inline = 'export EDITOR=vim'
+
 [plugins.starship]
 inline = 'eval "$(starship init zsh)"'
-

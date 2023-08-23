@@ -69,14 +69,6 @@ install_apt_packages() {
   fi
 }
 
-setup_desktop() {
-  title "Setup Desktop settings"
-
-  LANG=C xdg-user-dirs-gtk-update
-
-  gsettings set org.gnome.desktop.session idle-delay 0
-}
-
 install_packages() {
   title "Install packages"
 
@@ -105,6 +97,22 @@ install_packages() {
     sudo apt install -y ./wezterm-20230712-072601-f4abf8fd.Ubuntu22.04.deb
     rm wezterm-20230712-072601-f4abf8fd.Ubuntu22.04.deb
   fi
+
+  if [ ! -n $HOME/.local/share/fonts ]; then
+    curl -LO https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip?_gl=1*1dr4b*_ga*NDk1OTU5MzQwLjE2OTI2NjgxMDk.*_ga_9J976DJZ68*MTY5Mjc3MjkyMi4zLjAuMTY5Mjc3MjkyMy4wLjAuMA..&_ga=2.126337485.1528031180.1692772923-495959340.1692668109
+    mkdir ~/.local/share/fonts
+    unzip JetBrainsMono-2.304.zip -d ~/.local/share/fonts
+    rm JetBrainsMono-2.304.zip
+  fi
+}
+
+setup_desktop() {
+  title "Setup Desktop settings"
+
+  LANG=C xdg-user-dirs-gtk-update
+
+  gsettings set org.gnome.desktop.session idle-delay 0
+  fc-cache -fv
 }
 
 setup_symlinks() {
@@ -150,48 +158,15 @@ setup_shell() {
 echo -e
 success "Start orchestrating dotfiles settings."
 
-case "$1" in
-  pre_apt)
-    preinstall_apt_packages
-    ;;
-  set_apt)
-    setup_apt_package_list
-    ;;
-  apt)
-    install_apt_packages
-    ;;
-  desktop)
-    setup_desktop
-    ;;
-  install)
-    install_packages
-    ;;
-  link)
-    setup_symlinks
-    ;;
-  install_jetbrains_toolbox)
-    install_jetbrains_toolbox
-    ;;
-  update_alternative)
-    update_command_alternative
-    ;;
-  shell)
-    setup_shell
-    ;;
-  all)
-    preinstall_apt_packages
-    setup_apt_package_list
-    install_apt_packages
-    setup_desktop
-    setup_symlinks
-    install_packages
-    install_jetbrains_toolbox
-    update_command_alternative
-    setup_shell
-    ;;
-  *)
-    echo -e $"\nUsage: $(basename "$0") {pre_apt|set_apt|apt|install|link|install_jetbrains_toolbox|shell|all}\n"
-esac
+preinstall_apt_packages
+setup_apt_package_list
+install_apt_packages
+install_packages
+setup_desktop
+setup_symlinks
+install_jetbrains_toolbox
+update_command_alternative
+setup_shell
 
 echo -e
 success "Fin."

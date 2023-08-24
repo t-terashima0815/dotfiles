@@ -166,6 +166,8 @@ setup_shell() {
     chsh -s "$zsh_path"
     info "default shell changed to $zsh_path"
   fi
+  sudo systemctl enable docker
+  sudo usermod -aG docker $USER
   rm -rf ~/.bash*
 }
 

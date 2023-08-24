@@ -137,20 +137,22 @@ setup_symlinks() {
 
 install_jetbrains_toolbox() {
   title "Install Jetbrains toolbox"
-  wget "https://download.jetbrains.com/toolbox/jetbrains-toolbox-2.0.2.16660.tar.gz?_gl=1*1j86l66*_ga*MTM0MDYwODEwMS4xNjkyMDY4MzM3*_ga_9J976DJZ68*MTY5MjA2ODMzNy4xLjEuMTY5MjA2ODQ5Mi4wLjAuMA.." -O jetbrains-toolbox.tar.gz
-  tar xzvf jetbrains-toolbox.tar.gz
-  cd jetbrains-toolbox-2.0.2.16660
-  ./jetbrains-toolbox
-  cd ..
-  rm -rfv jetbrains-toolbox*
+  if [ ! -n $HOME/.local/share/JetBrains ]; then
+    wget "https://download.jetbrains.com/toolbox/jetbrains-toolbox-2.0.2.16660.tar.gz?_gl=1*1j86l66*_ga*MTM0MDYwODEwMS4xNjkyMDY4MzM3*_ga_9J976DJZ68*MTY5MjA2ODMzNy4xLjEuMTY5MjA2ODQ5Mi4wLjAuMA.." -O jetbrains-toolbox.tar.gz
+    tar xzvf jetbrains-toolbox.tar.gz
+    cd jetbrains-toolbox-2.0.2.16660
+    ./jetbrains-toolbox
+    cd ..
+    rm -rfv jetbrains-toolbox*
+  fi
 }
 
 update_command_alternative() {
   title "Update command alternative"
 
-  sudo update-alternatives --config x-terminal-emulator
-  sudo update-alternatives --config vi
-  sudo update-alternatives --config vim
+  sudo update-alternatives --set x-terminal-emulator /usr/bin/open-wezterm-here
+  sudo update-alternatives --set vi /usr/bin/nvim
+  sudo update-alternatives --set vim /usr/bin/nvim
 }
 
 setup_shell() {

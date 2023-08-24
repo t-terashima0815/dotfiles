@@ -118,6 +118,9 @@ setup_desktop() {
   LANG=C xdg-user-dirs-gtk-update
 
   gsettings set org.gnome.desktop.session idle-delay 0
+  gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false
+  gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
+  gsettings set org.gnome.shell favorite-apps "['google-chrome.desktop', 'firefox_firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.wezfurlong.wezterm.desktop']"
   fc-cache -fv
 }
 

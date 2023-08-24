@@ -55,11 +55,11 @@ preinstall_apt_packages() {
 setup_apt_package_list() {
   title "Configuring apt package list"
 
-  if [ ! -n /etc/apt/sources.list.d/google-chrome.list ]; then 
+  if [ ! -e /etc/apt/sources.list.d/google-chrome.list ]; then 
     wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor > packages.google.gpg
     sudo install -o root -g root -m 644 packages.google.gpg /etc/apt/trusted.gpg.d/
     sudo sh -c 'echo "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/packages.google.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-    rm packages.google.gpg
+    rm -v packages.google.gpg
   fi
 
   sudo apt update
@@ -104,7 +104,7 @@ install_packages() {
     rm wezterm-20230712-072601-f4abf8fd.Ubuntu22.04.deb
   fi
 
-  if [ ! -n $HOME/.local/share/fonts ]; then
+  if [ ! -e $HOME/.local/share/fonts ]; then
     curl -LO https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip?_gl=1*1dr4b*_ga*NDk1OTU5MzQwLjE2OTI2NjgxMDk.*_ga_9J976DJZ68*MTY5Mjc3MjkyMi4zLjAuMTY5Mjc3MjkyMy4wLjAuMA..&_ga=2.126337485.1528031180.1692772923-495959340.1692668109
     mkdir ~/.local/share/fonts
     unzip JetBrainsMono-2.304.zip -d ~/.local/share/fonts
@@ -137,7 +137,7 @@ setup_symlinks() {
 
 install_jetbrains_toolbox() {
   title "Install Jetbrains toolbox"
-  if [ ! -n $HOME/.local/share/JetBrains ]; then
+  if [ ! -e $HOME/.local/share/JetBrains ]; then
     wget "https://download.jetbrains.com/toolbox/jetbrains-toolbox-2.0.2.16660.tar.gz?_gl=1*1j86l66*_ga*MTM0MDYwODEwMS4xNjkyMDY4MzM3*_ga_9J976DJZ68*MTY5MjA2ODMzNy4xLjEuMTY5MjA2ODQ5Mi4wLjAuMA.." -O jetbrains-toolbox.tar.gz
     tar xzvf jetbrains-toolbox.tar.gz
     cd jetbrains-toolbox-2.0.2.16660

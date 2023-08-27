@@ -12,4 +12,10 @@ if [[ $(command -v exa) ]]; then
   alias lta=eta
 fi
 
+if [[ $(command -v docker-compose) ]]; then
+  alias dc='docker-compose'
+  alias dcr='dc run'
+  alias dcb='dc build'
+fi
+
 alias rm=trash-put

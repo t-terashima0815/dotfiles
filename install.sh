@@ -34,12 +34,13 @@ success() {
 preinstall_apt_packages() {
   title "Install apt packages"
 
-  sudo apt install \
+  sudo apt install -y \
   zsh \
   neovim \
   curl \
   wget \
   trash-cli \
+  direnv \
   docker.io \
   docker-doc \
   docker-compose \

@@ -62,8 +62,22 @@ setup_apt_package_list() {
     rm -v packages.google.gpg
   fi
 
-  sudo apt update
-  sudo apt upgrade
+  #初回は必ず更新
+  if [ ! -e update-time ]; then
+    sudo apt update
+    sudo apt upgrade
+    touch update-time
+    date "+%s" > update-time
+  else
+    # 1日以上更新してなかったら更新
+    now=$(date "+%s")
+    updated=$(cat update-time)
+    if [ $(($now-$updated)) -gt 86400 ]; then
+      sudo apt update
+      sudo apt upgrade
+      date "+%s" > update-time
+    fi
+  fi
 }
 
 install_apt_packages() {
@@ -109,6 +123,7 @@ install_packages() {
     mkdir ~/.local/share/fonts
     unzip JetBrainsMono-2.304.zip -d ~/.local/share/fonts
     rm JetBrainsMono-2.304.zip
+    fc-cache -fv
   fi
 }
 
@@ -121,7 +136,6 @@ setup_desktop() {
   gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false
   gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
   gsettings set org.gnome.shell favorite-apps "['google-chrome.desktop', 'firefox_firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.wezfurlong.wezterm.desktop']"
-  fc-cache -fv
 }
 
 setup_symlinks() {

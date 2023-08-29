@@ -35,6 +35,7 @@ preinstall_apt_packages() {
   title "Install apt packages"
 
   sudo apt install -y \
+  git-flow \
   zsh \
   neovim \
   curl \
@@ -63,6 +64,13 @@ setup_apt_package_list() {
     rm -v packages.google.gpg
   fi
 
+  if [ ! -e /etc/apt/sources.list.d/github-cli.list ]; then
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    && sudo apt update
+  fi
+
   #初回は必ず更新
   if [ ! -e update-time ]; then
     sudo apt update
@@ -87,6 +95,10 @@ install_apt_packages() {
   if ! command -v google-chrome-stable > /dev/null 2>&1 ; then
     sudo apt install google-chrome-stable
     xdg-settings set default-web-browser google-chrome.desktop
+  fi
+
+  if ! command -v gh > /dev/null 2>&1 ; then
+    sudo apt install gh
   fi
 }
 

@@ -18,4 +18,9 @@ if [[ $(command -v docker-compose) ]]; then
   alias dcb='dc build'
 fi
 
+function php-template() {
+  docker run -v $PWD:/app composer composer create-project graywings/php-docker-template $1
+  sudo chown -R $(whoami): $1
+}
+
 alias rm=trash-put

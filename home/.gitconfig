@@ -5,3 +5,6 @@
 	name = Taira Terashima
 [core]
 	editor = vim
+	hooksPath = .githooks
+[push]
+	autoSetupRemote = true

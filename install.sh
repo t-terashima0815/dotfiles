@@ -52,9 +52,14 @@ preinstall_apt_packages() {
   runc \
   apt-transport-https \
   build-essential \
+  auditd \
+  nasm \
   pkg-config \
   libfuse-dev \
-  libssl-dev
+  libssl-dev \
+  qemu-system \
+  qemu-system-common \
+  qemu-utils
 }
 
 setup_apt_package_list() {
@@ -77,7 +82,7 @@ setup_apt_package_list() {
   #初回は必ず更新
   if [ ! -e update-time ]; then
     sudo apt update
-    sudo apt upgrade
+    sudo apt -y upgrade
     touch update-time
     date "+%s" > update-time
   else
@@ -86,7 +91,7 @@ setup_apt_package_list() {
     updated=$(cat update-time)
     if [ $(($now-$updated)) -gt 86400 ]; then
       sudo apt update
-      sudo apt upgrade
+      sudo apt -y upgrade
       date "+%s" > update-time
     fi
   fi

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 DOTFILES="$(pwd)"
+TARGET="$(sudo systemctl get-default)"
+GRAPHICAL_TARGET=[ $TARGET = "graphical.target" ]
 COLOR_GRAY="\033[1;38;5;243m"
 COLOR_BLUE="\033[1;34m"
 COLOR_GREEN="\033[1;32m"
@@ -42,6 +44,7 @@ preinstall_apt_packages() {
   wget \
   trash-cli \
   direnv \
+  tmux \
   docker.io \
   docker-doc \
   docker-compose \
@@ -57,7 +60,7 @@ preinstall_apt_packages() {
 setup_apt_package_list() {
   title "Configuring apt package list"
 
-  if [ ! -e /etc/apt/sources.list.d/google-chrome.list ]; then 
+  if [ ! -e /etc/apt/sources.list.d/google-chrome.list ] && $GRAPHICAL_TARGET; then 
     wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor > packages.google.gpg
     sudo install -o root -g root -m 644 packages.google.gpg /etc/apt/trusted.gpg.d/
     sudo sh -c 'echo "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/packages.google.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
@@ -92,12 +95,12 @@ setup_apt_package_list() {
 install_apt_packages() {
   title "Install apt packages"
 
-  if ! command -v google-chrome-stable > /dev/null 2>&1 ; then
+  if ! command -v google-chrome-stable > /dev/null 2>&1 && $GRAPHICAL_TARGET; then
     sudo apt install google-chrome-stable
     xdg-settings set default-web-browser google-chrome.desktop
   fi
 
-  if ! command -v gh > /dev/null 2>&1 ; then
+  if ! command -v gh > /dev/null 2>&1 && $GRAPHICAL_TARGET; then
     sudo apt install gh
   fi
 }
@@ -106,14 +109,14 @@ install_packages() {
   title "Install packages"
 
   if ! command -v rustup > /dev/null 2>&1; then
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sudo sh -s -- -y
     source "$HOME/.cargo/env"
     rustup self update
     rustup update
   fi
 
   if ! command -v starship > /dev/null 2>&1; then
-    curl --proto '=https' --tlsv1.2 -sSf https://starship.rs/install.sh | sh -s -- -y
+    curl --proto '=https' --tlsv1.2 -sSf https://starship.rs/install.sh | sudo sh -s -- -y
   fi
 
   if ! command -v sheldon > /dev/null 2>&1; then
@@ -125,13 +128,13 @@ install_packages() {
     cargo install exa
   fi
 
-  if ! command -v wezterm > /dev/null 2>&1; then
+  if ! command -v wezterm > /dev/null 2>&1 && $GRAPHICAL_TARGET; then
     curl -LO https://github.com/wez/wezterm/releases/download/20230712-072601-f4abf8fd/wezterm-20230712-072601-f4abf8fd.Ubuntu22.04.deb
     sudo apt install -y ./wezterm-20230712-072601-f4abf8fd.Ubuntu22.04.deb
     rm wezterm-20230712-072601-f4abf8fd.Ubuntu22.04.deb
   fi
 
-  if [ ! -e $HOME/.local/share/fonts ]; then
+  if [ ! -e $HOME/.local/share/fonts ] && $GRAPHICAL_TARGET; then
     curl -LO https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip?_gl=1*1dr4b*_ga*NDk1OTU5MzQwLjE2OTI2NjgxMDk.*_ga_9J976DJZ68*MTY5Mjc3MjkyMi4zLjAuMTY5Mjc3MjkyMy4wLjAuMA..&_ga=2.126337485.1528031180.1692772923-495959340.1692668109
     mkdir ~/.local/share/fonts
     unzip JetBrainsMono-2.304.zip -d ~/.local/share/fonts
@@ -143,12 +146,14 @@ install_packages() {
 setup_desktop() {
   title "Setup Desktop settings"
 
-  LANG=C xdg-user-dirs-gtk-update
+  if $GRAPHICAL_TARGET; then
+    LANG=C xdg-user-dirs-gtk-update
 
-  gsettings set org.gnome.desktop.session idle-delay 0
-  gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false
-  gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
-  gsettings set org.gnome.shell favorite-apps "['google-chrome.desktop', 'firefox_firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.wezfurlong.wezterm.desktop']"
+    gsettings set org.gnome.desktop.session idle-delay 0
+    gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false
+    gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
+    gsettings set org.gnome.shell favorite-apps "['google-chrome.desktop', 'firefox_firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.wezfurlong.wezterm.desktop']"
+  fi
 }
 
 setup_symlinks() {
@@ -167,7 +172,7 @@ setup_symlinks() {
 
 install_jetbrains_toolbox() {
   title "Install Jetbrains toolbox"
-  if [ ! -e $HOME/.local/share/JetBrains ]; then
+  if [ ! -e $HOME/.local/share/JetBrains ] && $GRAPHICAL_TARGET; then
     wget "https://download.jetbrains.com/toolbox/jetbrains-toolbox-2.0.2.16660.tar.gz?_gl=1*1j86l66*_ga*MTM0MDYwODEwMS4xNjkyMDY4MzM3*_ga_9J976DJZ68*MTY5MjA2ODMzNy4xLjEuMTY5MjA2ODQ5Mi4wLjAuMA.." -O jetbrains-toolbox.tar.gz
     tar xzvf jetbrains-toolbox.tar.gz
     cd jetbrains-toolbox-2.0.2.16660
@@ -180,7 +185,9 @@ install_jetbrains_toolbox() {
 update_command_alternative() {
   title "Update command alternative"
 
-  sudo update-alternatives --set x-terminal-emulator /usr/bin/open-wezterm-here
+  if $GRAPHICAL_TARGET; then
+    sudo update-alternatives --set x-terminal-emulator /usr/bin/open-wezterm-here
+  fi
   sudo update-alternatives --set vi /usr/bin/nvim
   sudo update-alternatives --set vim /usr/bin/nvim
 }

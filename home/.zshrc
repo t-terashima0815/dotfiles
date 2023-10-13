@@ -16,4 +16,7 @@ function warn_dirty() {
 if [[ ! -o login ]]; then
   warn_dirty
 fi
+export LANG=ja_JP.utf8
+export LANGUAGE=ja_JP.utf8
+export LC_ALL=ja_JP.utf8
 eval "$(sheldon source)"

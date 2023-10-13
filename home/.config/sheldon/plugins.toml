@@ -21,3 +21,4 @@ inline = 'eval "$(starship init zsh)"'
 
 [plugins.direnv]
 inline = 'eval "$(direnv hook zsh)"'
+

@@ -19,4 +19,5 @@ fi
 export LANG=ja_JP.utf8
 export LANGUAGE=ja_JP.utf8
 export LC_ALL=ja_JP.utf8
+export PATH="$HOME/.cargo/bin:$PATH"
 eval "$(sheldon source)"

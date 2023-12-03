@@ -13,11 +13,15 @@ function warn_dirty() {
   fi
 }
 
-if [[ ! -o login ]]; then
-  warn_dirty
+if [ $SHLVL = 1 ]; then
+  if [[ ! -o login ]]; then
+    warn_dirty
+  fi
+  tmux
+else
+  export LANG=ja_JP.utf8
+  export LANGUAGE=ja_JP.utf8
+  export LC_ALL=ja_JP.utf8
+  export PATH="$HOME/.cargo/bin:$PATH"
+  eval "$(sheldon source)"
 fi
-export LANG=ja_JP.utf8
-export LANGUAGE=ja_JP.utf8
-export LC_ALL=ja_JP.utf8
-export PATH="$HOME/.cargo/bin:$PATH"
-eval "$(sheldon source)"

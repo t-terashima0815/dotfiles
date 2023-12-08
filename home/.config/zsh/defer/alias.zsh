@@ -12,10 +12,14 @@ if [[ $(command -v exa) ]]; then
   alias lta=eta
 fi
 
-if [[ $(command -v docker-compose) ]]; then
-  alias dc='docker-compose'
+if [[ $(command -v docker) ]]; then
+  alias dl='cat $HOME/.docker/ghcr.io | docker login ghcr.io -u t-terashima0815 --password-stdin'
+  alias dc='docker compose'
   alias dcr='dc run'
   alias dcb='dc build'
+  alias php-template='docker run -it -v $PWD:/app -e LOCAL_GID=$(id -g) -e LOCAL_UID=$(id -u) ghcr.io/old-home/php composer create-project graywings/php-docker-template'
+  alias php='docker compose run php php'
+  alias composer='docker compose run php composer'
 fi
 
 function php-template() {

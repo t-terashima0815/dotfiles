@@ -13,6 +13,10 @@ function warn_dirty() {
   fi
 }
 
+if [ -e "${HOME}/.zshrc.secret" ]; then
+  source "${HOME}/.zshrc.secret"
+fi
+
 if [ $SHLVL = 1 ]; then
   if [[ ! -o login ]]; then
     warn_dirty

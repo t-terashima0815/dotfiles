@@ -18,8 +18,9 @@ if [[ $(command -v docker) ]]; then
   alias dcr='dc run'
   alias dcb='dc build'
   alias php-template='docker run -it -v $PWD:/app -e LOCAL_GID=$(id -g) -e LOCAL_UID=$(id -u) ghcr.io/old-home/php composer create-project graywings/php-docker-template'
-  alias php='docker compose run -T php php'
-  alias composer='docker compose -T run php composer'
+  alias php='docker run -it -v $PWD:/app -e LOCAL_GID=$(id -g) -e LOCAL_UID=$(id -u) ghcr.io/old-home/php php'
+  alias composer='docker run -it -v $PWD:/app -e LOCAL_GID=$(id -g) -e LOCAL_UID=$(id -u) ghcr.io/old-home/php composer'
+  alias doxygen='docker run --rm -v "${PWD}":/data nakatt/doxygen Doxyfile'
 fi
 
 function php-template() {

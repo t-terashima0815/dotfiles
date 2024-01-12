@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 DOTFILES="$(pwd)"
-TARGET="$(sudo systemctl get-default)"
-GRAPHICAL_TARGET=[ $TARGET = "graphical.target" ]
+GRAPHICAL_TARGET=[[ "$(sudo systemctl get-default)" == 'graphical.target' ]]
 COLOR_GRAY="\033[1;38;5;243m"
 COLOR_BLUE="\033[1;34m"
 COLOR_GREEN="\033[1;32m"
@@ -60,17 +59,11 @@ preinstall_apt_packages() {
   qemu-system \
   qemu-system-common \
   qemu-utils
+  sudo ubuntu-drivers install
 }
 
 setup_apt_package_list() {
   title "Configuring apt package list"
-
-  if [ ! -e /etc/apt/sources.list.d/google-chrome.list ] && $GRAPHICAL_TARGET; then 
-    wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor > packages.google.gpg
-    sudo install -o root -g root -m 644 packages.google.gpg /etc/apt/trusted.gpg.d/
-    sudo sh -c 'echo "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/packages.google.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-    rm -v packages.google.gpg
-  fi
 
   if [ ! -e /etc/apt/sources.list.d/github-cli.list ]; then
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
@@ -101,7 +94,8 @@ install_apt_packages() {
   title "Install apt packages"
 
   if ! command -v google-chrome-stable > /dev/null 2>&1 && $GRAPHICAL_TARGET; then
-    sudo apt install google-chrome-stable
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    sudo dpkg -i google-chrome-stable_current_amd64.deb
     xdg-settings set default-web-browser google-chrome.desktop
   fi
 
@@ -114,7 +108,7 @@ install_packages() {
   title "Install packages"
 
   if ! command -v rustup > /dev/null 2>&1; then
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sudo sh -s -- -y
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     source "$HOME/.cargo/env"
     rustup self update
     rustup update

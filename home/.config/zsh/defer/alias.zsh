@@ -17,10 +17,11 @@ if [[ $(command -v docker) ]]; then
   alias dc='docker compose'
   alias dcr='dc run'
   alias dcb='dc build'
-  alias php-template='docker run -it -v $PWD:/app -e LOCAL_GID=$(id -g) -e LOCAL_UID=$(id -u) ghcr.io/old-home/php composer create-project graywings/php-docker-template'
-  alias php='docker run -it -v $PWD:/app -e LOCAL_GID=$(id -g) -e LOCAL_UID=$(id -u) ghcr.io/old-home/php php'
-  alias composer='docker run -it -v $PWD:/app -e LOCAL_GID=$(id -g) -e LOCAL_UID=$(id -u) ghcr.io/old-home/php composer'
-  alias doxygen='docker run --rm -v "${PWD}":/data nakatt/doxygen Doxyfile'
+  alias dr='docker run --env-file $HOME/.env'
+  alias php-template='dr -it -v $PWD:/app -e LOCAL_GID=$(id -g) -e LOCAL_UID=$(id -u) ghcr.io/old-home/php composer create-project graywings/php-docker-template'
+  alias php='dr -it -v $PWD:/app -e LOCAL_GID=$(id -g) -e LOCAL_UID=$(id -u) ghcr.io/old-home/php php'
+  alias composer='dr -it -v $PWD:/app -e LOCAL_GID=$(id -g) -e LOCAL_UID=$(id -u) ghcr.io/old-home/php composer'
+  alias phpdoc='dr --rm -v $PWD:/data phpdoc/phpdoc && sudo chown -R $(id -g):$(id -u) build'
 fi
 
 function php-template() {

@@ -18,7 +18,7 @@ if [[ $(command -v docker) ]]; then
   alias dcr='dc run'
   alias dcb='dc build'
   alias dr='docker run --env-file $HOME/.env'
-  alias php-template='dr -it -v $PWD:/app -e LOCAL_GID=$(id -g) -e LOCAL_UID=$(id -u) ghcr.io/old-home/php composer create-project graywings/php-docker-template'
+  alias php-template='dr -it -v $PWD:/app -v $HOME/.ssh:/home/docker/.ssh -e LOCAL_GID=$(id -g) -e LOCAL_UID=$(id -u) ghcr.io/old-home/php composer create-project graywings/php-docker-template'
   alias php='dr -it -v $PWD:/app -e LOCAL_GID=$(id -g) -e LOCAL_UID=$(id -u) ghcr.io/old-home/php php'
   alias composer='dr -it -v $PWD:/app -e LOCAL_GID=$(id -g) -e LOCAL_UID=$(id -u) ghcr.io/old-home/php composer'
   alias phpdoc='dr --rm -v $PWD:/data phpdoc/phpdoc && sudo chown -R $(id -g):$(id -u) build'

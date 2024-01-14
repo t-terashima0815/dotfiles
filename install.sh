@@ -65,11 +65,19 @@ preinstall_apt_packages() {
 setup_apt_package_list() {
   title "Configuring apt package list"
 
+  if [ ! -e /etc/apt/sources.list.d/1password.list ]; then
+    curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$(dpkg --print-architecture) stable main" | sudo tee /etc/apt/sources.list.d/1password.list
+    sudo mkdir -p /etc/debsig/policies/AC2D62742012EA22/
+    curl -sS https://downloads.1password.com/linux/debian/debsig/1password.pol | sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol
+    sudo mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22
+    curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg
+  fi
+
   if [ ! -e /etc/apt/sources.list.d/github-cli.list ]; then
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
     && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-    && sudo apt update
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
   fi
 
   #初回は必ず更新
@@ -88,6 +96,7 @@ setup_apt_package_list() {
       date "+%s" > update-time
     fi
   fi
+  sudo update
 }
 
 install_apt_packages() {
@@ -102,6 +111,11 @@ install_apt_packages() {
   if ! command -v gh > /dev/null 2>&1 && $GRAPHICAL_TARGET; then
     sudo apt install gh
   fi
+
+  if ! command -v op > /dev/nuill 2>&1; then
+    sudo apt install 1password-cli
+  fi
+  sudo apt install 1password
 }
 
 install_packages() {
@@ -167,6 +181,7 @@ setup_symlinks() {
   for f in $(find home/ -mindepth 1 -maxdepth 1 -path "home/.config" -prune -o -path "home/.local" -prune -o -print); do
     ln  -snfv ${PWD}/"$f" ~/
   done
+  cat op.env | op inject > $HOME/.env
 }
 
 install_jetbrains_toolbox() {

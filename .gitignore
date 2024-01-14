@@ -2,6 +2,7 @@
 /.**
 
 !/.gitignore
+!/op.env
 !/install.sh
 !/home/
 

@@ -58,7 +58,9 @@ preinstall_apt_packages() {
   libssl-dev \
   qemu-system \
   qemu-system-common \
-  qemu-utils
+  qemu-utils \
+  xsel \
+  xclip
   sudo ubuntu-drivers install
 }
 
@@ -72,6 +74,11 @@ setup_apt_package_list() {
     curl -sS https://downloads.1password.com/linux/debian/debsig/1password.pol | sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol
     sudo mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22
     curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg
+  fi
+
+  if [ ! -e /etc/apt/sources.list.d/wezterm.list ]; then
+    curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
+    echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
   fi
 
   if [ ! -e /etc/apt/sources.list.d/github-cli.list ]; then
@@ -96,7 +103,7 @@ setup_apt_package_list() {
       date "+%s" > update-time
     fi
   fi
-  sudo update
+  sudo apt update
 }
 
 install_apt_packages() {
@@ -139,12 +146,6 @@ install_packages() {
 
   if ! command -v exa > /dev/null 2>&1; then
     cargo install exa
-  fi
-
-  if ! command -v wezterm > /dev/null 2>&1 && $GRAPHICAL_TARGET; then
-    curl -LO https://github.com/wez/wezterm/releases/download/20230712-072601-f4abf8fd/wezterm-20230712-072601-f4abf8fd.Ubuntu22.04.deb
-    sudo apt install -y ./wezterm-20230712-072601-f4abf8fd.Ubuntu22.04.deb
-    rm wezterm-20230712-072601-f4abf8fd.Ubuntu22.04.deb
   fi
 
   if [ ! -e $HOME/.local/share/fonts ] && $GRAPHICAL_TARGET; then

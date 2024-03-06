@@ -27,5 +27,6 @@ else
   export LANGUAGE=ja_JP.utf8
   export LC_ALL=ja_JP.utf8
   export PATH="$HOME/.cargo/bin:$PATH"
+  export PATH="$HOME/.yarn/bin:$PATH"
   eval "$(sheldon source)"
 fi

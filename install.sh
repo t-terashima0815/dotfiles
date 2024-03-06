@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 DOTFILES="$(pwd)"
-GRAPHICAL_TARGET=[[ "$(sudo systemctl get-default)" == 'graphical.target' ]]
+GRAPHICAL_TARGET=$([[ "$(sudo systemctl get-default)" == 'graphical.target' ]])
 COLOR_GRAY="\033[1;38;5;243m"
 COLOR_BLUE="\033[1;34m"
 COLOR_GREEN="\033[1;32m"
@@ -119,7 +119,7 @@ install_apt_packages() {
     sudo apt install gh
   fi
 
-  if ! command -v op > /dev/nuill 2>&1; then
+  if ! command -v op > /dev/null 2>&1; then
     sudo apt install 1password-cli
   fi
   sudo apt install 1password

@@ -1,3 +1,6 @@
+export PATH=~/.local/bin:$PATH
+export PATH=/opt/homebrew/bin:$PATH
+
 function is_dirty() {
   local dotfiles_dir=~/dotfiles
   test -n "$(git -C ${dotfiles_dir} status --porcelain)" ||

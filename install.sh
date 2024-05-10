@@ -20,25 +20,41 @@ title() {
   echo -e "${COLOR_GRAY}=================================${COLOR_NONE}\n"
 }
 
-install_packages() {
+install_brew_packages() {
+  title "Install brew packages"
   if [ "$OS" == "Mac" ]; then
     brew install \
       asdf \
       neovim \
       1password-cli \
       tmux \
-      direnv
+      direnv \
+      docker \
+      mas
     brew install --cask \
       google-chrome \
       1password \
       jetbrains-toolbox \
       karabiner-elements \
-      wezterm
+      wezterm \
+      rancher \
+      discord
   elif [ "$OS" == "Linux" ]; then
     echo 'Linux'
   else
     echo 'Not Supported'
   fi
+}
+
+install_mas_packages() {
+  stores=(
+    539883307
+  )
+
+  echo "app stores"
+  for store in "${stores[@]}"; do
+      mas install $store
+  done
 }
 
 setup_symlinks() {
@@ -58,38 +74,48 @@ setup_symlinks() {
 
 setup_rust_packages() {
   if ! command -v rustup > /dev/null 2>&1; then
-      curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-      source "$HOME/.cargo/env"
-      rustup self update
-      rustup update
-    fi
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    source "$HOME/.cargo/env"
+    rustup self update
+    rustup update
+  fi
 
-    mkdir -p ~/.local/bin
-    if ! command -v starship > /dev/null 2>&1; then
-      curl --proto '=https' --tlsv1.2 -sSf https://starship.rs/install.sh | sh /dev/stdin -f -b $HOME/.local/bin
-    fi
+  mkdir -p ~/.local/bin
+  if ! command -v starship > /dev/null 2>&1; then
+    curl --proto '=https' --tlsv1.2 -sSf https://starship.rs/install.sh | sh /dev/stdin -f -b $HOME/.local/bin
+  fi
 
-    if ! command -v sheldon > /dev/null 2>&1; then
-      cargo install sheldon
-      sheldon init --shell zsh
-    fi
+  if ! command -v sheldon > /dev/null 2>&1; then
+    cargo install sheldon
+    sheldon init --shell zsh
+  fi
 
-    if ! command -v exa > /dev/null 2>&1; then
-      cargo install exa
-    fi
+  if ! command -v exa > /dev/null 2>&1; then
+    cargo install exa
+  fi
 }
 
 setup_font() {
-    if [ ! -e $HOME/.local/share/fonts ] ; then
-      curl -LO https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip?_gl=1*1dr4b*_ga*NDk1OTU5MzQwLjE2OTI2NjgxMDk.*_ga_9J976DJZ68*MTY5Mjc3MjkyMi4zLjAuMTY5Mjc3MjkyMy4wLjAuMA..&_ga=2.126337485.1528031180.1692772923-495959340.1692668109
-      mkdir ~/.local/share/fonts
-      unzip JetBrainsMono-2.304.zip -d ~/.local/share/fonts
-      rm JetBrainsMono-2.304.zip
-      fc-cache -fv
-    fi
+  title "Setup font"
+  if [ ! -e $HOME/.local/share/fonts ] ; then
+    curl -LO https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip?_gl=1*1dr4b*_ga*NDk1OTU5MzQwLjE2OTI2NjgxMDk.*_ga_9J976DJZ68*MTY5Mjc3MjkyMi4zLjAuMTY5Mjc3MjkyMy4wLjAuMA..&_ga=2.126337485.1528031180.1692772923-495959340.1692668109
+    mkdir ~/.local/share/fonts
+    unzip JetBrainsMono-2.304.zip -d ~/.local/share/fonts
+    rm JetBrainsMono-2.304.zip
+    fc-cache -fv
+  fi
 }
 
-install_packages
+setup_dock() {
+  title "Setup dock"
+  defaults write com.apple.dock tilesize -int 48
+  defaults write com.apple.dock magnification -bool false
+  defaults write com.apple.dock orientation -string "left"
+}
+
+install_brew_packages
+install_mas_packages
 setup_rust_packages
 setup_font
 setup_symlinks
+setup_dock

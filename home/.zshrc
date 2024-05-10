@@ -1,3 +1,4 @@
+export PATH=~/.rd/bin:$PATH
 export PATH=~/.local/bin:$PATH
 export PATH=/opt/homebrew/bin:$PATH
 

@@ -48,6 +48,7 @@ install_brew_packages() {
 
 install_mas_packages() {
   stores=(
+    497799835
     539883307
   )
 

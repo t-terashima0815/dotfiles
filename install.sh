@@ -87,23 +87,13 @@ setup_apt_package_list() {
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
   fi
 
-  #初回は必ず更新
-  if [ ! -e update-time ]; then
-    sudo apt update
-    sudo apt -y upgrade
-    touch update-time
-    date "+%s" > update-time
-  else
-    # 1日以上更新してなかったら更新
-    now=$(date "+%s")
-    updated=$(cat update-time)
-    if [ $(($now-$updated)) -gt 86400 ]; then
-      sudo apt update
-      sudo apt -y upgrade
-      date "+%s" > update-time
-    fi
+  if [ ! -e /etc/apt/sources.list.d/notion-repackaged.list ]; then
+    echo "deb [trusted=yes] https://apt.fury.io/notion-repackaged/ /" | sudo tee /etc/apt/sources.list.d/notion-repackaged.list
   fi
+
   sudo apt update
+  sudo apt -y upgrade
+  date "+%s" > update-time
 }
 
 install_apt_packages() {
@@ -122,7 +112,8 @@ install_apt_packages() {
   if ! command -v op > /dev/null 2>&1; then
     sudo apt install 1password-cli
   fi
-  sudo apt install 1password
+  sudo apt install 1password \
+    notion-app-enhanced
 }
 
 install_packages() {
@@ -223,15 +214,29 @@ setup_shell() {
 echo -e
 success "Start orchestrating dotfiles settings."
 
-preinstall_apt_packages
-setup_apt_package_list
-install_apt_packages
-install_packages
-setup_desktop
-setup_symlinks
-install_jetbrains_toolbox
-update_command_alternative
-setup_shell
+install() {
+  preinstall_apt_packages
+  setup_apt_package_list
+  install_apt_packages
+  install_packages
+  setup_desktop
+  setup_symlinks
+  install_jetbrains_toolbox
+  update_command_alternative
+  setup_shell
+}
+#初回は必ず更新
+if [ ! -e update-time ]; then
+  touch update-time
+  install
+else
+  # 1日以上更新してなかったら更新
+  now=$(date +%s)
+  updated=$(cat update-time)
+  if [ $(($now-$updated)) -gt 86400 ]; then
+    install
+  fi
+fi
 
 echo -e
 success "Fin."

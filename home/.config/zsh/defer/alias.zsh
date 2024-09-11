@@ -44,3 +44,8 @@ function php-template() {
   docker run -v $PWD:/app composer composer create-project graywings/php-docker-template $1
   sudo chown -R $(whoami): $1
 }
+
+if [[ $(command -v nvim) ]]; then
+  alias vi='nvim'
+  alias vim='nvim'
+fi

@@ -6,6 +6,6 @@
 [core]
 	editor = vim
 	hooksPath = .githooks
-	commentChar = >
+	commentChar = `
 [push]
 	autoSetupRemote = true

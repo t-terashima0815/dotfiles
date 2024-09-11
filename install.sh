@@ -16,7 +16,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
 fi
 
 title() {
-  echo -e "\n${COLOR_PURPLE}$1${COLOR_PURPLE}"
+  echo -e "\n${COLOR_PURPLE}$1${COLOR_NONE}"
   echo -e "${COLOR_GRAY}=================================${COLOR_NONE}\n"
 }
 
@@ -48,6 +48,7 @@ install_brew_packages() {
 
 install_mas_packages() {
   stores=(
+    302584613
     497799835
     539883307
   )
@@ -114,9 +115,26 @@ setup_dock() {
   defaults write com.apple.dock orientation -string "left"
 }
 
-install_brew_packages
-install_mas_packages
-setup_rust_packages
-setup_font
-setup_symlinks
-setup_dock
+install() {
+  install_brew_packages
+  install_mas_packages
+  setup_rust_packages
+  setup_font
+  setup_symlinks
+  setup_dock
+}
+
+now=$(date +%s)
+if [ ! -e update-time ]; then
+  touch update-time
+  install
+  echo $now > update-time
+else
+  updated=$(cat update-time)
+  passed=$(($now-$updated))
+  if [ $passed -gt 86400 ]; then
+    install
+    echo $now > update-time
+  fi
+fi
+

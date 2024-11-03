@@ -30,4 +30,4 @@ export LC_ALL=ja_JP.utf8
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.yarn/bin:$PATH"
 eval "$(sheldon source)"
-
+eval "$(/usr/libexec/path_helper)"

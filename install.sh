@@ -38,7 +38,8 @@ install_brew_packages() {
       karabiner-elements \
       wezterm \
       rancher \
-      discord
+      discord \
+      mactex
   elif [ "$OS" == "Linux" ]; then
     echo 'Linux'
   else
